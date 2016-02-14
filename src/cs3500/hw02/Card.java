@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Represents a playing card from a standard deck of cards.
  */
-public class Card {
+public class Card implements Comparable<Card> {
   private final Rank rankValue;
   private final Suit suitValue;
 
@@ -18,15 +18,6 @@ public class Card {
   public Card(Rank newRank, Suit newSuit) {
     this.rankValue = newRank;
     this.suitValue = newSuit;
-  }
-
-  /**
-   * Constructs a Card with the same values as the given Card
-   * @param card the Card whose values will be copied
-   */
-  public Card(Card card) {
-    rankValue = card.getRank();
-    suitValue = card.getSuit();
   }
 
   /**
@@ -48,12 +39,12 @@ public class Card {
   }
 
   /**
-   * Returns this Card's value and suit appended together in String form.
-   *
-   * @return a String of this Card's rank value concatenated to its suit.
+   * Returns a String of the Rank appended to the Suit
+   * @return String of the Rank appended to the Suit
    */
-  public String printCard() {
-    return rankValue.getRankSymbol() + suitValue.getSuitSymbol();
+  @Override
+  public String toString() {
+    return rankValue.toString() + suitValue.toString();
   }
 
   /**
@@ -78,5 +69,35 @@ public class Card {
   @Override
   public int hashCode() {
     return Objects.hash(rankValue, suitValue);
+  }
+
+  /**
+   * Compares this Card to the given Card. The order specified for this method is
+   * suits take priority (Clubs, Diamonds, Hearts, Spades), followed by the rank value
+   * (Ace, King, ..., 3, 2).
+   *
+   * @param that the Card being compared to this Card
+   * @return -1 if this is less than the given Card, 0 if this is equal to the given Card, and
+   * 1 if this is greater than the given Card.
+   */
+  @Override
+  public int compareTo(Card that) {
+    int thisSuitIdx = this.suitValue.ordinal();
+    int thatSuitIdx = that.getSuit().ordinal();
+    if (thisSuitIdx < thatSuitIdx) {
+      return -1;
+    } else if (thisSuitIdx > thatSuitIdx) {
+      return 1;
+    } else {
+      int thisRankIdx = this.rankValue.ordinal();
+      int thatRankIdx = that.getRank().ordinal();
+      if (thisRankIdx < thatRankIdx) {
+        return -1;
+      } else if (thisRankIdx == thatRankIdx) {
+        return 0;
+      } else {
+        return 1;
+      }
+    }
   }
 }

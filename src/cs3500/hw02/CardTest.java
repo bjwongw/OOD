@@ -52,18 +52,18 @@ public class CardTest {
   }
 
   /**
-   * Tests for the method printCard
+   * Tests for the method toString
    */
   @Test
-  public void printCard() {
-    assertEquals(kingClubs.printCard(), "K♣");
-    assertEquals(queenSpades.printCard(), "Q♠");
-    assertEquals(aceHearts.printCard(), "A♥");
-    assertEquals(sevenHearts.printCard(), "7♥");
-    assertEquals(nineSpades.printCard(), "9♠");
-    assertEquals(eightDiamonds.printCard(), "8♦");
-    assertEquals(threeClubs.printCard(), "3♣");
-    assertEquals(fiveDiamonds.printCard(), "5♦");
+  public void testToString() {
+    assertEquals(kingClubs.toString(), "K♣");
+    assertEquals(queenSpades.toString(), "Q♠");
+    assertEquals(aceHearts.toString(), "A♥");
+    assertEquals(sevenHearts.toString(), "7♥");
+    assertEquals(nineSpades.toString(), "9♠");
+    assertEquals(eightDiamonds.toString(), "8♦");
+    assertEquals(threeClubs.toString(), "3♣");
+    assertEquals(fiveDiamonds.toString(), "5♦");
   }
 
   /**
@@ -71,10 +71,8 @@ public class CardTest {
    */
   @Test
   public void testEquals() {
-    assertEquals(kingClubs.equals(kingClubs), true);
     assertEquals(kingClubs.equals(new Card(Rank.King, Suit.Clubs)), true);
     assertEquals(new Card(Rank.King, Suit.Clubs).equals(kingClubs), true);
-    assertEquals(sevenHearts.equals(sevenHearts), true);
     assertEquals(sevenHearts.equals(new Card(Rank.Seven, Suit.Hearts)), true);
     assertEquals(new Card(Rank.Seven, Suit.Hearts).equals(sevenHearts), true);
     assertEquals(new Card(Rank.Seven, Suit.Hearts).equals(new Card(Rank.Seven, Suit.Hearts)), true);
@@ -98,5 +96,24 @@ public class CardTest {
     assertEquals(nineSpades.hashCode(), new Card(Rank.Nine, Suit.Spades).hashCode());
     assertEquals(new Card(Rank.Six, Suit.Diamonds).hashCode(),
       new Card(Rank.Six, Suit.Diamonds).hashCode());
+  }
+
+  /**
+   * Tests for the method compareTo
+   */
+  @Test
+  public void testCompareTo() {
+    assertEquals(kingClubs.compareTo(eightClubs), -1);
+    assertEquals(kingClubs.compareTo(kingDiamonds), -1);
+    assertEquals(eightClubs.compareTo(aceHearts), -1);
+    assertEquals(sevenHearts.compareTo(nineSpades), -1);
+    assertEquals(eightClubs.compareTo(eightClubs), 0);
+    assertEquals(eightHearts.compareTo(eightHearts), 0);
+    assertEquals(fiveDiamonds.compareTo(fiveDiamonds), 0);
+    assertEquals(queenSpades.compareTo(queenSpades), 0);
+    assertEquals(threeSpades.compareTo(fourHearts), 1);
+    assertEquals(eightHearts.compareTo(aceHearts), 1);
+    assertEquals(threeClubs.compareTo(eightClubs), 1);
+    assertEquals(nineSpades.compareTo(queenSpades), 1);
   }
 }
