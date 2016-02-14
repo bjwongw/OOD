@@ -62,4 +62,21 @@ public class PlayerTest {
     assertEquals(p2.getHand().size(), 6);
     assertEquals(p2.getHand().get(5), nineDiamonds);
   }
+
+  /**
+   * Tests for the methods addWins and getWins
+   */
+  @Test
+  public void testAddWinsGetWins() {
+    Player p1 = new Player();
+    Player p2 = new Player();
+    assertEquals(p1.getWins(), 0);
+    assertEquals(p2.getWins(), 0);
+    p1.addWin();
+    assertEquals(p1.getWins(), 1);
+    p2.addWin();
+    assertEquals(p2.getWins(), 1);
+    p2.addWin();
+    assertEquals(p2.getWins(), 2);
+  }
 }

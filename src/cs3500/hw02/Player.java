@@ -8,12 +8,14 @@ import java.util.List;
  */
 public class Player {
   private List<Card> hand;
+  private int wins;
 
   /**
    * Constructs a Player
    */
   public Player() {
     hand = new ArrayList<>();
+    wins = 0;
   }
 
   /**
@@ -32,5 +34,20 @@ public class Player {
    */
   public void addToHand(Card givenCard) {
     hand.add(givenCard);
+  }
+
+  /**
+   * Returns the player's wins
+   * @return the number of wins this player has
+   */
+  public int getWins() {
+   return wins;
+   }
+
+  /**
+   * Adds 1 to this player's wins field
+   */
+  public void addWin() {
+    wins += 1;
   }
 }
