@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Specifies operations for any generic standard card game.
+ * Specifies operations for any generic standard deck game.
  */
-public class GenericStandardCardGame implements GenericCardGameModel<Card> {
-  private List<Card> deck;
-  private List<Player> players;
+public class GenericStandardDeckGame implements GenericCardGameModel<Card> {
+  protected List<Card> deck;
+  protected List<Player> players;
 
   /**
-   * Constructs a new generic standard card game with the default parameters
+   * Constructs a new generic standard deck game with the default parameters
    */
-  public GenericStandardCardGame() {
-    deck = new ArrayList<>();
-    players = new ArrayList<>();
+  public GenericStandardDeckGame() {
+    this.deck = new ArrayList<>();
+    this.players = new ArrayList<>();
   }
 
   /**
@@ -38,9 +38,9 @@ public class GenericStandardCardGame implements GenericCardGameModel<Card> {
   @Override
   public List<Card> getDeck() {
     List<Card> deck = new ArrayList<>();
-    for (int i = 0; i < Suit.ABC_SUITS.size(); i++) {
-      for (int j = 0; j < Rank.ACE_HIGH_DESC.size(); j++) {
-        Card newCard = new Card(Rank.ACE_HIGH_DESC.get(j), Suit.ABC_SUITS.get(i));
+    for (Suit s : Suit.values()) {
+      for (Rank r : Rank.values()) {
+        Card newCard = new Card(r, s);
         deck.add(newCard);
       }
     }
@@ -67,7 +67,7 @@ public class GenericStandardCardGame implements GenericCardGameModel<Card> {
    * Distributes the cards in the specified order among the players in round-
    * robin fashion.
    *
-   * <p>Void side effect: sets this GenericStandardCardGame's players field
+   * <p>Void side effect: sets this GenericStandardDeckGame's players field
    * to the playerList created in this method. Also sets the deck field
    * to be the given deck.</p>
    *
@@ -94,31 +94,17 @@ public class GenericStandardCardGame implements GenericCardGameModel<Card> {
     this.players = playerList;
   }
 
-  /**
-   * Clones the given list of Cards. The returned list does not reference the same objects
-   * as the given list.
-   *
-   * @param cards the given list of Cards to clone
-   * @return a clone of the given list of Cards
-   */
-  public List<Card> cloneCards(List<Card> cards) {
-    List<Card> newCardSet = new ArrayList<>();
-    for (Card c : cards) {
-      newCardSet.add(new Card(c));
-    }
-    return newCardSet;
-  }
-
-  @Override public String getGameState() {
+  @Override
+  public String getGameState() {
     int numPlayers = players.size();
     String firstLine = String.format("Number of Players: %d", numPlayers);
     StringBuilder sb = new StringBuilder(firstLine);
     for (int i = 0; i < numPlayers; i++) {
       sb.append(System.lineSeparator());
       Player curPlayer = this.players.get(i);
-      List<Card> curPlayerHand = cloneCards(curPlayer.getHand());
-      Collections.sort(curPlayerHand, new AbcSuitAceHighDesc());
-      String cards = curPlayerHand.stream().map(Card::printCard).collect(Collectors.joining(", "));
+      List<Card> curPlayerHand = new ArrayList<>(curPlayer.getHand());
+      Collections.sort(curPlayerHand);
+      String cards = curPlayerHand.stream().map(Card::toString).collect(Collectors.joining(", "));
       String playerId = String.format("Player %d: ", i + 1);
       sb.append(playerId.concat(cards));
     }

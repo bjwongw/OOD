@@ -9,19 +9,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 /**
- * Tests for the GenericStandardCardGame class.
+ * Tests for the GenericStandardDeckGame class.
  */
-public class GenericStandardCardGameTest {
+public class GenericStandardDeckGameTest {
 
-  GenericStandardCardGame game = new GenericStandardCardGame();
+  GenericStandardDeckGame game = new GenericStandardDeckGame();
 
   /**
    * Tests for the method getPlayers
    */
   @Test
   public void testGetPlayers() {
-    GenericStandardCardGame game1 = new GenericStandardCardGame();
-    GenericStandardCardGame game2 = new GenericStandardCardGame();
+    GenericStandardDeckGame game1 = new GenericStandardDeckGame();
+    GenericStandardDeckGame game2 = new GenericStandardDeckGame();
 
     assertEquals(game1.getPlayers(), new ArrayList<Player>());
     assertEquals(game1.getPlayers(), game2.getPlayers());
@@ -78,7 +78,7 @@ public class GenericStandardCardGameTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void startPlayEmptyDeck() {
-    game.startPlay(2, new ArrayList<Card>());
+    game.startPlay(2, new ArrayList<>());
   }
 
   /**
@@ -126,7 +126,7 @@ public class GenericStandardCardGameTest {
 
   /**
    * Tests the method startPlay.
-   * <p>Ensures that an expcetion will be thrown if the given number of Players is 1.</p>
+   * <p>Ensures that an exception will be thrown if the given number of Players is 1.</p>
    */
   @Test (expected = IllegalArgumentException.class)
   public void startPlayOnePlayer() {
@@ -135,7 +135,7 @@ public class GenericStandardCardGameTest {
 
   /**
    * Tests the method startPlay.
-   * <p>Ensures that an expcetion will be thrown if the given number of Players is less than 1.</p>
+   * <p>Ensures that an exception will be thrown if the given number of Players is less than 1.</p>
    */
   @Test (expected = IllegalArgumentException.class)
   public void startPlayLessThanOnePlayer() {
@@ -143,11 +143,24 @@ public class GenericStandardCardGameTest {
   }
 
   /**
+   * Tests getGameState after an exception is thrown by startPlay.
+   */
+  @Test
+  public void testGetGameState_startPlayThrewException() {
+    assertEquals(game.getGameState(), "Number of Players: 0");
+    try {
+      game.startPlay(0, game.getDeck());
+    } catch (IllegalArgumentException ex) {
+      assertEquals(game.getGameState(), "Number of Players: 0");
+    }
+  }
+
+  /**
    * Tests for the method startPlay using various amounts of players
    */
   @Test
   public void testStartPlay() {
-    GenericStandardCardGame game = new GenericStandardCardGame();
+    GenericStandardDeckGame game = new GenericStandardDeckGame();
     assertEquals(game.getPlayers().size(), 0);
 
     game.startPlay(2, game.getDeck());
@@ -185,7 +198,7 @@ public class GenericStandardCardGameTest {
    */
   @Test
   public void testStartPlay_UnorderedDeck() {
-    GenericStandardCardGame game = new GenericStandardCardGame();
+    GenericStandardDeckGame game = new GenericStandardDeckGame();
     List<Card> unorderedDeck = game.getDeck();
     assertEquals(unorderedDeck, game.getDeck());
     Card temp = unorderedDeck.get(51);
@@ -199,11 +212,35 @@ public class GenericStandardCardGameTest {
   }
 
   /**
+   * Tests for the method startPlay. Tests that startPlay actually uses the given deck.
+   * Checks the accuracy of this by examining the getGameState return.
+   */
+  @Test
+  public void testStartPlay_changeInputDeck() {
+    GenericStandardDeckGame game = new GenericStandardDeckGame();
+    String newline = System.getProperty("line.separator");
+    List<Card> gameDeck = game.getDeck();
+    Card lastCard = gameDeck.get(51); // 2 of Spades
+    Card firstCard = gameDeck.get(0); // Ace of Clubs
+    gameDeck.remove(51);
+    gameDeck.remove(0);
+    gameDeck.add(0, lastCard); // the first Card is now 2 of Spades
+    gameDeck.add(firstCard); // the last Card is now Ace of Clubs
+
+    game.startPlay(4, gameDeck);
+    assertEquals(game.getGameState(), "Number of Players: 4" + newline +
+      "Player 1: 10♣, 6♣, 2♣, J♦, 7♦, 3♦, Q♥, 8♥, 4♥, K♠, 9♠, 5♠, 2♠" + newline +
+      "Player 2: K♣, 9♣, 5♣, A♦, 10♦, 6♦, 2♦, J♥, 7♥, 3♥, Q♠, 8♠, 4♠" + newline +
+      "Player 3: Q♣, 8♣, 4♣, K♦, 9♦, 5♦, A♥, 10♥, 6♥, 2♥, J♠, 7♠, 3♠" + newline +
+      "Player 4: A♣, J♣, 7♣, 3♣, Q♦, 8♦, 4♦, K♥, 9♥, 5♥, A♠, 10♠, 6♠");
+  }
+
+  /**
    * Tests for the method getGameState
    */
   @Test
   public void testGetGameState() {
-    GenericStandardCardGame game = new GenericStandardCardGame();
+    GenericStandardDeckGame game = new GenericStandardDeckGame();
     String newline = System.getProperty("line.separator");
     assertEquals(game.getGameState(), "Number of Players: 0");
 
@@ -222,15 +259,15 @@ public class GenericStandardCardGameTest {
   }
 
   /**
-   * Tests for the method getGameState to ensure that cloneCards is properly cloning cards.
-   * Within getGameState, the purpose of cloneCards is to prevent mutation to each Player's
-   * hands when sorting. This test method ensures that they are not being mutated.
+   * Tests for the method getGameState to ensure that the Collections.sort() call on the Player's
+   * hand is not changing the actual ordering of their cards.
    */
   @Test
-  public void testGetGameState_cloneCards() {
-    GenericStandardCardGame game = new GenericStandardCardGame();
+  public void testGetGameState_notChangingPlayerHand() {
+    GenericStandardDeckGame game = new GenericStandardDeckGame();
     game.startPlay(2, game.getDeck());
     Player player1 = game.getPlayers().get(0);
+    assertEquals(player1.getHand().get(0), new Card(Rank.Ace, Suit.Clubs));
     player1.getHand().set(0, new Card(Rank.Two, Suit.Clubs));
     assertEquals(player1.getHand().get(0), new Card(Rank.Two, Suit.Clubs));
     game.getGameState();
@@ -238,9 +275,10 @@ public class GenericStandardCardGameTest {
 
     game.startPlay(4, game.getDeck());
     Player player2 = game.getPlayers().get(0);
-    player2.getHand().set(2, new Card(Rank.Four, Suit.Clubs));
-    assertEquals(player2.getHand().get(2), new Card(Rank.Four, Suit.Clubs));
+    assertEquals(player2.getHand().get(2), new Card(Rank.Six, Suit.Clubs));
+    player2.getHand().set(2, new Card(Rank.Four, Suit.Spades));
+    assertEquals(player2.getHand().get(2), new Card(Rank.Four, Suit.Spades));
     game.getGameState();
-    assertEquals(player2.getHand().get(2), new Card(Rank.Four, Suit.Clubs));
+    assertEquals(player2.getHand().get(2), new Card(Rank.Four, Suit.Spades));
   }
 }
