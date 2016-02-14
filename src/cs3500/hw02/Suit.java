@@ -21,16 +21,11 @@ public enum Suit {
   }
 
   /**
-   * List of Suits ordered alphabetically
-   */
-  public static final List<Suit> ABC_SUITS = Arrays.asList(Clubs, Diamonds, Hearts, Spades);
-
-  /**
    * Returns the symbol of the Suit
-   *
-   * @return the symbol of the Suit
+   * @return Returns the symbol of the Suit
    */
-  public String getSuitSymbol() {
+  @Override
+  public String toString() {
     return symbol;
   }
 }

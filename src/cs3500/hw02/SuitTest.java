@@ -10,13 +10,13 @@ import static org.junit.Assert.assertEquals;
 public class SuitTest {
 
   /**
-   * Tests for the method getSuitSymbol
+   * Tests for the method toString
    */
   @Test
-  public void testGetSuitSymbol() {
-    assertEquals(Suit.Clubs.getSuitSymbol(), "♣");
-    assertEquals(Suit.Diamonds.getSuitSymbol(), "♦");
-    assertEquals(Suit.Hearts.getSuitSymbol(), "♥");
-    assertEquals(Suit.Spades.getSuitSymbol(), "♠");
+  public void testToString() {
+    assertEquals(Suit.Clubs.toString(), "♣");
+    assertEquals(Suit.Diamonds.toString(), "♦");
+    assertEquals(Suit.Hearts.toString(), "♥");
+    assertEquals(Suit.Spades.toString(), "♠");
   }
 }
