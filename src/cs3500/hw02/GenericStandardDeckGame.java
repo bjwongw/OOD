@@ -101,8 +101,7 @@ public class GenericStandardDeckGame implements GenericCardGameModel<Card> {
     StringBuilder sb = new StringBuilder(firstLine);
     for (int i = 0; i < numPlayers; i++) {
       sb.append(System.lineSeparator());
-      Player curPlayer = this.players.get(i);
-      List<Card> curPlayerHand = new ArrayList<>(curPlayer.getHand());
+      List<Card> curPlayerHand = new ArrayList<>(players.get(i).getHand());
       Collections.sort(curPlayerHand);
       String cards = curPlayerHand.stream().map(Card::toString).collect(Collectors.joining(", "));
       String playerId = String.format("Player %d: ", i + 1);
