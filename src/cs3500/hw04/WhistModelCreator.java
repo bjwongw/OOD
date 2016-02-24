@@ -1,5 +1,7 @@
 package cs3500.hw04;
 
+import cs3500.hw02.Card;
+import cs3500.hw03.CardGameModel;
 import cs3500.hw03.WhistModel;
 
 /**
@@ -19,7 +21,7 @@ public class WhistModelCreator {
    * @return a WhistModel of the given model type
    * @throws IllegalArgumentException if the ModelType is invalid
    */
-  public static WhistModel create(ModelType type) {
+  public static CardGameModel<Card> create(ModelType type) {
     if (type == ModelType.TRUMP) return new WhistTrumpModel();
     else if (type == ModelType.NOTRUMP) return new WhistModel();
     else throw new IllegalArgumentException("Given something other than a legal ModelType");

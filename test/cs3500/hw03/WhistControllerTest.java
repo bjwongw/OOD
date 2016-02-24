@@ -54,7 +54,8 @@ public class WhistControllerTest {
    * @param interactions the mock inputs and expected outputs
    * @param <K> type parameter (e.g. Card)
    */
-  public <K> void testStartGame(CardGameModel<K> model, Interaction[] interactions) {
+  public <K> void testStartGame(CardGameModel<K> model, Interaction[] interactions,
+    int numPlayers) {
     StringBuilder fakeUserInput = new StringBuilder();
     StringBuilder expectedOutput = new StringBuilder();
 
@@ -66,7 +67,7 @@ public class WhistControllerTest {
     Appendable actualOutput = new StringBuilder();
 
     IWhistController controller = new WhistController(input, actualOutput);
-    controller.startGame(model, 2);
+    controller.startGame(model, numPlayers);
 
     assertEquals(expectedOutput.toString(), actualOutput.toString());
   }
@@ -443,7 +444,7 @@ public class WhistControllerTest {
         "Player 1: 24 hands won", "Player 2: 2 hands won",
         "Game over. Player 1 won."})
     };
-    testStartGame(new WhistModel(), interactions);
+    testStartGame(new WhistModel(), interactions, 2);
   }
 
   /**
