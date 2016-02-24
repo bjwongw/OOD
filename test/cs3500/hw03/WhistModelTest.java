@@ -169,7 +169,7 @@ public class WhistModelTest {
   @Test
   public void testIsGameOver() {
     CardGameModel<Card> whist = new WhistModel();
-    assertEquals(whist.isGameOver(), false);
+    assertEquals(whist.isGameOver(), true);
 
     whist.startPlay(5, whist.getDeck());
     assertEquals(whist.isGameOver(), false);
@@ -186,8 +186,7 @@ public class WhistModelTest {
   public void testGetGameState_noPlayers() {
     CardGameModel<Card> whist = new WhistModel();
     assertEquals(whist.getCurrentPlayer(), 0);
-    assertEquals(whist.getGameState(), "Number of Players: 0" + newline +
-      "Turn: Player 1");
+    assertEquals("Number of Players: 0\nGame over. Player  won.", whist.getGameState());
   }
 
   /**

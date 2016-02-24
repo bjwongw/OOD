@@ -198,11 +198,13 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
    */
   private List<Integer> mostWins() {
     List<Integer> numWins = players.stream().map(Player::getWins).collect(Collectors.toList());
-    int maxWins = Collections.max(numWins);
     List<Integer> winners = new ArrayList<>();
-    for (int i = 0; i < numWins.size(); i++) {
-      if (numWins.get(i) == maxWins) {
-        winners.add(i + 1);
+    if (numWins.size() > 0) {
+      int maxWins = Collections.max(numWins);
+      for (int i = 0; i < numWins.size(); i++) {
+        if (numWins.get(i) == maxWins) {
+          winners.add(i + 1);
+        }
       }
     }
     return winners;
