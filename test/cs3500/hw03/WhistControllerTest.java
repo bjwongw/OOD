@@ -1,8 +1,6 @@
 package cs3500.hw03;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -74,17 +72,27 @@ public class WhistControllerTest {
   }
 
   /**
-   * Tests the method startGame when given too few players
+   * Tests the method startGame when given zero players
    */
-  @Test
-  public void testStartGame_tooFewPlayers() {
+  @Test(expected = IllegalArgumentException.class)
+  public void startGameZeroPlayers() {
     out = new StringBuffer();
     in = new StringReader("");
     whist = new WhistModel();
     controller = new WhistController(in, out);
     controller.startGame(whist, 0);
-    assertEquals(out.toString(), "Try again, that was invalid input: Error: Cannot play a game " +
-      "with 1 or less players.\n");
+  }
+
+  /**
+   * Tests the method startGame when given too few players
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public void startGameOnePlayer() {
+    out = new StringBuffer();
+    in = new StringReader("");
+    whist = new WhistModel();
+    controller = new WhistController(in, out);
+    controller.startGame(whist, 1);
   }
 
   /**
@@ -132,9 +140,6 @@ public class WhistControllerTest {
       prints(new String[] {"Try again, that was invalid input: The position -1 is invalid"}),
       inputs("100\n"),
       prints(new String[] {"Try again, that was invalid input: The position 100 is invalid"}),
-      inputs("0\n"),
-      prints(new String[] {"Try again, that was invalid input: Played a card of the " +
-        "wrong suit, you have a card with the correct suit."}),
       inputs("6\n"),
       prints(new String[] {"Number of Players: 2",
         "Player 1: Q♣, 10♣, 8♣, 6♣, 4♣, 2♣, J♦, 9♦, 7♦, 5♦, 3♦, A♥, Q♥, 10♥, 8♥, 6♥, "
@@ -142,6 +147,9 @@ public class WhistControllerTest {
         "Player 2: K♣, 9♣, 7♣, 5♣, 3♣, Q♦, 8♦, 6♦, 4♦, 2♦, K♥, J♥, 9♥, 7♥, 5♥, "
           + "3♥, A♠, Q♠, 10♠, 8♠, 6♠, 4♠, 2♠", "Player 1: 1 hands won", "Player 2: 1 hands won",
         "Turn: Player 1"}),
+      inputs("0\n"),
+      prints(new String[] {"Try again, that was invalid input: Played a card of the " +
+        "wrong suit, you have a card with the correct suit."}),
       inputs("6\n"),
       prints(new String[] {"Number of Players: 2",
         "Player 1: Q♣, 10♣, 8♣, 6♣, 4♣, 2♣, 9♦, 7♦, 5♦, 3♦, A♥, Q♥, 10♥, 8♥, 6♥, "
@@ -433,8 +441,290 @@ public class WhistControllerTest {
         "Player 1: ",
         "Player 2: ",
         "Player 1: 24 hands won", "Player 2: 2 hands won",
-        "Game over. Player 1 won."}),
+        "Game over. Player 1 won."})
     };
     testStartGame(new WhistModel(), interactions);
+  }
+
+  /**
+   * Tests the method startGame and runs inputs all the way through the game.
+   */
+  @Test
+  public void testStartGame_fivePlayers() {
+    StringBuilder fakeUserInput = new StringBuilder();
+    StringBuilder expectedOutput = new StringBuilder();
+
+    WhistModel testModel = new WhistModel();
+    testModel.startPlay(5, testModel.getDeck());
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 3);
+    fakeUserInput.append("3\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 3);
+    fakeUserInput.append("3\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 4);
+    fakeUserInput.append("4\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 5);
+    fakeUserInput.append("5\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 3);
+    fakeUserInput.append("3\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 4);
+    fakeUserInput.append("4\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 3);
+    fakeUserInput.append("3\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 5);
+    fakeUserInput.append("5\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 5);
+    fakeUserInput.append("5\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 6);
+    fakeUserInput.append("6\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 5);
+    fakeUserInput.append("5\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 4);
+    fakeUserInput.append("4\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 6);
+    fakeUserInput.append("6\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 3);
+    fakeUserInput.append("3\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 5);
+    fakeUserInput.append("5\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 5);
+    fakeUserInput.append("5\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 4);
+    fakeUserInput.append("4\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 4);
+    fakeUserInput.append("4\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 3);
+    fakeUserInput.append("3\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 3);
+    fakeUserInput.append("3\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 2);
+    fakeUserInput.append("2\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 1);
+    fakeUserInput.append("1\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(2, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(3, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(4, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(0, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    testModel.play(1, 0);
+    fakeUserInput.append("0\n");
+    expectedOutput.append(testModel.getGameState());
+    expectedOutput.append("\n");
+
+    Readable input = new StringReader(fakeUserInput.toString());
+    Appendable actualOutput = new StringBuilder();
+
+    IWhistController controller = new WhistController(input, actualOutput);
+    controller.startGame(new WhistModel(), 5);
+
+    assertEquals(expectedOutput.toString(), actualOutput.toString());
   }
 }

@@ -1,9 +1,7 @@
 package cs3500.hw03;
 
 import java.io.IOException;
-import java.util.InputMismatchException;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Controller for the IWhistController interface
@@ -27,20 +25,12 @@ public class WhistController implements IWhistController {
     Objects.requireNonNull(game);
     Scanner scan = new Scanner(this.input);
     try {
-      game.startPlay(numPlayers, game.getDeck());
+      List<K> deck = game.getDeck();
+      game.startPlay(numPlayers, deck);
       String gameState = game.getGameState() + "\n";
       this.output.append(gameState);
-    } catch (IllegalArgumentException ex) {
-      String exceptionMessage = ex.getMessage();
-      String outputMessage = "Try again, that was invalid input: " + exceptionMessage + "\n";
-      try {
-        this.output.append(outputMessage);
-        return;
-      } catch (IOException io) {
-        System.out.println("Try again, that was invalid input: input/output exception\n");
-      }
     } catch (IOException io) {
-      System.out.println("Try again, that was invalid input: input/output exception\n");
+      io.printStackTrace();
     }
     while(!game.isGameOver()) {
       if (scan.hasNextInt()) {
@@ -55,10 +45,10 @@ public class WhistController implements IWhistController {
           try {
             this.output.append(outputMessage);
           } catch (IOException io) {
-            System.out.println("Try again, that was invalid input: input/output exception\n");
+            io.printStackTrace();
           }
         } catch (IOException io) {
-          System.out.println("Try again, that was invalid input: input/output exception\n");
+          io.printStackTrace();
         }
       } else if (scan.hasNextLine()) {
         try {
@@ -66,7 +56,7 @@ public class WhistController implements IWhistController {
           String outputMessage = "Try again, that was invalid input: need to input integers\n";
           this.output.append(outputMessage);
         } catch (IOException io) {
-          System.out.println("Try again, that was invalid input: input/output exception\n");
+          io.printStackTrace();
         }
       }
     }

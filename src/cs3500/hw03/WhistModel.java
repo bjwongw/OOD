@@ -5,6 +5,7 @@ import cs3500.hw02.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -26,9 +27,9 @@ import java.util.stream.Collectors;
  * cards in the hand and keeps them aside, and then starts the next hand.</p>
  */
 public class WhistModel extends GenericStandardDeckGame implements CardGameModel<Card> {
-  private List<Player> remainingPlayers;
-  private List<Card> currentHand;
-  private int curPlayerIdx;
+  protected List<Player> remainingPlayers;
+  protected List<Card> currentHand;
+  protected int curPlayerIdx;
 
   /**
    * Constructs a new WhistModel with the default parameters
@@ -55,6 +56,9 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
   public void startPlay(int numPlayers, List<Card> deck) {
     super.startPlay(numPlayers, deck);
     this.remainingPlayers = playersWithCardsLeft();
+    for (Player p : this.players) {
+      Collections.sort(p.getHand());
+    }
   }
 
   /**
@@ -65,7 +69,7 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
    * @return true if there is at least one card in the hand with a suit matching the given
    * suit value, false otherwise.
    */
-  private boolean isSuitInHand(List<Card> hand, Suit suitValue) {
+  protected boolean isSuitInHand(List<Card> hand, Suit suitValue) {
     for (Card c : hand) {
       if (c.getSuit() == suitValue) {
         return true;
@@ -82,7 +86,7 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
    * @return the given index if that player still has cards, else the next player's index that has
    * cards. If no players have cards, -1 is returned.
    */
-  private int findNextStarter(int playerIdx) {
+  protected int findNextStarter(int playerIdx) {
     if (players.get(playerIdx).getHand().size() > 0) {
       return playerIdx;
     } else {
@@ -102,7 +106,7 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
    * the player at the curPlayerIdx.
    * @return a list of the Players with cards remaining.
    */
-  private List<Player> playersWithCardsLeft() {
+  protected List<Player> playersWithCardsLeft() {
     List<Player> remainingPlayers = new ArrayList<>();
     for (int i = 0; i < players.size(); i++) {
       int curIdx = (curPlayerIdx + i) % players.size();
@@ -119,7 +123,7 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
    * winning player's index. If the winning player has no more cards left, curPlayerIdx is set
    * to the next player who does have cards left.
    */
-  private void lastPlayInHand() {
+  protected void lastPlayInHand() {
     Suit handSuit = currentHand.get(0).getSuit();
     Card highestCard = currentHand.get(0);
     for (Card c : currentHand) {
@@ -181,7 +185,7 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
 
   @Override
   public boolean isGameOver() {
-    return curPlayerIdx < 0;
+    return curPlayerIdx < 0 || remainingPlayers.size() <= 1;
   }
 
   /**
@@ -241,5 +245,20 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
     sb.append(System.lineSeparator());
     sb.append(getTurnMessage());
     return sb.toString();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (! (obj instanceof WhistModel)) return false;
+    WhistModel that = (WhistModel) obj;
+    return this.deck == that.deck && this.players == that.players && this.remainingPlayers ==
+      that.remainingPlayers && this.currentHand == that.currentHand && this.curPlayerIdx ==
+      that.curPlayerIdx;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.deck, this.players, this.remainingPlayers, this.currentHand,
+      this.curPlayerIdx);
   }
 }
