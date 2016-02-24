@@ -32,13 +32,14 @@ public class WhistController implements IWhistController {
     } catch (IOException io) {
       io.printStackTrace();
     }
-    while(!game.isGameOver()) {
+    while(!game.isGameOver() && scan.hasNext()) {
       if (scan.hasNextInt()) {
         try {
-          game.play(game.getCurrentPlayer(), scan.nextInt());
+          int num = scan.nextInt();
+          scan.nextLine();
+          game.play(game.getCurrentPlayer(), num);
           String gameState = game.getGameState() + "\n";
           this.output.append(gameState);
-          scan.nextLine();
         } catch (IllegalArgumentException | InputMismatchException e) {
           String exceptionMessage = e.getMessage();
           String outputMessage = "Try again, that was invalid input: " + exceptionMessage + "\n";
@@ -50,7 +51,7 @@ public class WhistController implements IWhistController {
         } catch (IOException io) {
           io.printStackTrace();
         }
-      } else if (scan.hasNextLine()) {
+      } else {
         try {
           scan.nextLine();
           String outputMessage = "Try again, that was invalid input: need to input integers\n";

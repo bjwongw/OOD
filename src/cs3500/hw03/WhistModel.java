@@ -5,7 +5,6 @@ import cs3500.hw02.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -247,20 +246,5 @@ public class WhistModel extends GenericStandardDeckGame implements CardGameModel
     sb.append(System.lineSeparator());
     sb.append(getTurnMessage());
     return sb.toString();
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (! (obj instanceof WhistModel)) return false;
-    WhistModel that = (WhistModel) obj;
-    return this.deck == that.deck && this.players == that.players && this.remainingPlayers ==
-      that.remainingPlayers && this.currentHand == that.currentHand && this.curPlayerIdx ==
-      that.curPlayerIdx;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.deck, this.players, this.remainingPlayers, this.currentHand,
-      this.curPlayerIdx);
   }
 }
